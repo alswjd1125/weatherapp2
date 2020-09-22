@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:image" content="img/weather-icon.png"/> 
+    <meta property="og:url" content="https://alswjd1125.github.io/bab/weather/index.html"/> 
+    <meta property="og:description" content="오늘의 날씨"/> 
+    <meta property="og:title" content="Weather"/>
+
+    <title>weather</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="css/css.css">
+    <link rel="stylesheet" href="css/weather-icons.min.css">
+    <link rel="shortcut icon" href="weather-favi.ico">
+    
+</head>
+<body>
+    
+    
+    
+    <div id="weather_info">
+        <h1 class="city"></h1>
+
+        <section>
+            <p class="temp"></p>
+            
+            <div class="new-icon">
+            <i class="wi wi-day-sunny"></i>
+            </div>
+            <p class="w_id"></p>
+
+            <aside>
+                <p class="temp_max">max</p>
+                <p class="temp_min">min</p>
+            </aside>
+        </section>
+        <!-- <img class="load_img" src="sehun3.png" width="50"> -->
+    </div>
+
+
+    <!--  -->
+    <div class="time">
+        <p id="time-result"></p>
+    </div>
+
+    <div id="myTime">
+
+    </div>
+    
+    
+    <script>
+        var url='https://api.openweathermap.org/data/2.5/weather?q=seoul&appid=a772e76eef6c6a2d94a9ce9999fb79b8';
+
+        
+
+
+        
+
+        $.getJSON(url,function(data){
+           // 날씨 데이터 객체
+         var sys = data.sys;              // 국가명, 일출/일몰         
+         var wind = data.wind;            //바람
+         var city = data.name;            // 도시명
+         var weather = data.weather;      // 날씨 객체
+         var main = data.main;            // 온도 기압 관련 객체
+         var wmain = weather[0].main;     // 구름 상태(Cloudiness)
+         var w_id = weather[0].id;        // 날씨상태 id 코드
+         var icon = weather[0].icon;      // 날씨 아이콘 정보
+         var country = sys.country;       // 국가명
+         var temp = main.temp;            // 현재 온도
+         var temp_min = main.temp_min;    // 최저 온도
+         var temp_max = main.temp_max;    // 최고 온도
+
+            // $('body').append( wmain + ', ' + icon + ' '
+            // + '현재 온도: ' + parseInt(temp-273.15) + ' '
+            // + '최저 온도: ' + parseInt(temp_min-273.15) + ' '
+            // + '최고 온도: ' + parseInt(temp_max-273.15) + ' '
+            // + country + ' ' + city + ' ' + w_id + ' ' + '<br>');    
+
+
+            //날씨 아이콘 표시
+        //     var icon_url = 'http://openweathermap.org/img/w/' + icon;
+        //  $('body').append("<img src='" + icon_url + ".png'>");
+
+
+         var nowTimestamp = Math.floor(Date.now() / 1000);
+                var weatherClass = 'wi wi-owm-';
+                weatherClass += (nowTimestamp >= data.sunrise && nowTimestamp <= data.sunset ? 'day' : 'night');
+                weatherClass += ('-' + weather[0].id);
+
+                $("#weather_info .icon").addClass(weatherClass);
+         
+
+
+
+         //날씨 정보 표시
+         $('#weather_info > .city').html(city + "/" + country);
+        //  $('#weather_info .icon').html("<img src='" + icon_url + ".png'>");
+         $('#weather_info .w_id').html(wmain);
+         $('#weather_info .temp_min').html(parseInt(temp_min-273.15) + '&deg;' + ' 최저기온');
+         $('#weather_info .temp_max').html(parseInt(temp_max-273.15) + '&deg;' + ' 최고기온');
+         $('#weather_info .temp').html(parseInt(temp-273.15) + '&deg');
+
+            
+
+        // 데이터 로딩 후 로딩이미지 제거
+        
+
+
+        }) //end getJSON()
+
+        .fail(function(){
+            //오류메세지
+            alert("loading error");
+        });
+
+        
+
+
+
+// ------------------------------밤낮 이미지----------
+
+        today = new Date() ;
+
+        var hour = today.getHours();
+
+        if( hour > 7 && hour < 19) {myback ="img/day3-1.jpg"
+        ; }
+
+        else { myback = "img/night-2.jpg"; }
+
+        document.write("<BODY BACKGROUND = " + myback + " > ");
+         
+        
+// ---------------------------------------------------
+
+var d = new Date();
+ var currentDate = d.getFullYear() + "년 " + ( d.getMonth() + 1 ) + "월 " + d.getDate() + "일"; 
+ var currentTime = d.getHours() + "시 " + d.getMinutes() + "분 ";
+ var result = document.getElementById("time-result");
+ result.innerHTML = currentDate;
+
+//  ---------------------------------------------------------------
+
+ var myTime = document.getElementById('myTime');
+    var d =new Date(),
+    h=d.getHours(),
+    m=d.getMinutes(),
+    s=d.getSeconds();
+    
+    
+    
+
+    //24시간제 ->12시간제 변경
+        var h12 = (h>12) ? (h - 12) :h;
+
+        // 12시간제 -오전오후 판정
+        var ampm = (h<12)?"오전":"오후";
+
+        // 분 2자릿수 표시
+        var min_o = (m<10) ? "0":"";
+
+        // 초 2자릿수 표사
+        var sec_o = (s<10) ? "0": "";
+
+        var time = ampm + " "+h12+"시"+min_o+m+"분";
+        // document.write(time)
+        myTime.innerHTML=time;
+
+
+
+
+
+
+
+
+    </script>
+</body>
+</html>
